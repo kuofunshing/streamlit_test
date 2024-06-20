@@ -1,9 +1,9 @@
+import os
 import streamlit as st
-import openai
 import requests
 
-# Replace 'your_openai_api_key_here' with your actual OpenAI API key
-OPENAI_API_KEY = 'your_openai_api_key_here'
+# Assuming you have set OPENAI_API_KEY in your environment variables
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'default_value_if_not_set')
 
 # ChatCompletion API's URL
 COMPLETION_API_URL = 'https://api.openai.com/v1/engines/davinci-codex/completions'
@@ -25,10 +25,8 @@ def get_response(prompt):
         if response.status_code == 200:
             return response.json()[0]['choices'][0]['text']
         else:
-            # Improved error handling to display the status code
             return f'Error generating response. Status Code: {response.status_code}.'
     except Exception as e:
-        # Catching exceptions to handle network errors or other issues
         return f'An error occurred: {str(e)}'
 
 st.title('Simple Dialogue Bot')
