@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Assuming you have set OPENAI_API_KEY in your environment variables
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'default_value_if_not_set')
+
 
 # ChatCompletion API's URL
 COMPLETION_API_URL = 'https://api.openai.com/v1/engines/davinci-codex/completions'
