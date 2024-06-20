@@ -2,7 +2,7 @@ import streamlit as st
 import openai
 
 # 設置 OpenAI API 金鑰
-openai.api_key = 'YOUR_OPENAI_API_KEY'
+openai.api_key = st.secrets["openai_api_key"]
 
 st.title("ChatGPT 對話功能")
 st.write("與 ChatGPT 進行對話。")
