@@ -2,7 +2,8 @@ import streamlit as st
 import openai
 
 # 設置 OpenAI API 金鑰
-openai.api_key = st.secrets["openai_api_key"]
+openai.api_key = 'YOUR_OPENAI_API_KEY'
+st.write(f"OpenAI API version: {openai.__version__}")
 
 st.title("ChatGPT 對話功能")
 st.write("與 ChatGPT 進行對話。")
@@ -21,7 +22,8 @@ if user_input:
         model="gpt-4",
         messages=st.session_state['chat_history']
     )
-    st.session_state['chat_history'].append({"role": "assistant", "content": response['choices'][0]['message']['content']})
+    message = response['choices'][0]['message']['content']
+    st.session_state['chat_history'].append({"role": "assistant", "content": message})
 
 # 顯示聊天歷史記錄
 for message in st.session_state['chat_history']:
