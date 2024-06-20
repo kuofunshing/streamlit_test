@@ -1,31 +1,34 @@
 import streamlit as st
 import openai
+import requests
 
-# 設置 OpenAI API 金鑰
-openai.api_key = 'YOUR_OPENAI_API_KEY'
-st.write(f"OpenAI API version: {openai.__version__}")
+# OpenAI API密钥
+OPENAI_API_KEY = 'openai_api_key'
 
-st.title("ChatGPT 對話功能")
-st.write("與 ChatGPT 進行對話。")
+# ChatCompletion API的URL
+COMPLETION_API_URL = 'https://api.openai.com/v1/engines/davinci-codex/completions'
 
-# 初始化聊天歷史記錄
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
+def get_response(prompt):
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {OPENAI_API_KEY}'
+    }
+    data = {
+        'prompt': prompt,
+        'max_tokens': 60,
+        'n': 1,
+        'stop': None,
+        'temperature': 0.5
+    }
+    response = requests.post(COMPLETION_API_URL, json=data, headers=headers)
+    if response.status_code == 200:
+        return response.json()[0]['choices'][0]['text']
+    else:
+        return 'Error generating response.'
 
-# 獲取用戶輸入
-user_input = st.text_input("你：", key="input")
+st.title('Simple Dialogue Bot')
 
-# 當用戶輸入新消息時，將其添加到聊天歷史記錄中並獲取模型的響應
-if user_input:
-    st.session_state['chat_history'].append({"role": "user", "content": user_input})
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=st.session_state['chat_history']
-    )
-    message = response['choices'][0]['message']['content']
-    st.session_state['chat_history'].append({"role": "assistant", "content": message})
-
-# 顯示聊天歷史記錄
-for message in st.session_state['chat_history']:
-    role = "你" if message["role"] == "user" else "ChatGPT"
-    st.write(f"{role}: {message['content']}")
+user_input = st.text_input("Ask something:")
+if st.button('Get Response'):
+    response = get_response(user_input)
+    st.write(response)
