@@ -3,7 +3,8 @@ import openai
 from openai import OpenAI
 
 # 设置 OpenAI API 金钥
-openai.api_key = st.secrets["openai_api_key"]
+api_key = st.secrets["openai_api_key"]
+openai.api_key = api_key
 
 st.title("ChatGPT 对话功能")
 st.write("与 ChatGPT 进行对话。")
@@ -17,8 +18,7 @@ user_input = st.text_input("你：", key="input")
 
 # 测试调用
 try:
-    
-    client = OpenAI()
+    client = OpenAI(api_key=api_key)  # 将 api_key 传递给 OpenAI 类
 
     # 进行一次测试调用
     test_response = client.completions.create(
@@ -30,6 +30,8 @@ try:
     st.write(f"测试调用成功: {test_response}")
 except ImportError:
     st.write("OpenAI 类不存在或导入错误。请确认是否正确安装和导入 OpenAI 库。")
+except Exception as e:
+    st.write(f"测试调用失败: {e}")
 
 # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
 if user_input:
