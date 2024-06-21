@@ -17,7 +17,7 @@ user_input = st.text_input("你：", key="input")
 # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
 if user_input:
     st.session_state['chat_history'].append({"role": "user", "content": user_input})
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=st.session_state['chat_history']
     )
