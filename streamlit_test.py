@@ -1,5 +1,6 @@
 import streamlit as st
 import openai
+from openai import OpenAI
 
 # 设置 OpenAI API 金钥
 openai.api_key = st.secrets["openai_api_key"]
@@ -16,7 +17,7 @@ user_input = st.text_input("你：", key="input")
 
 # 测试调用
 try:
-    from openai import OpenAI
+    
     client = OpenAI()
 
     # 进行一次测试调用
