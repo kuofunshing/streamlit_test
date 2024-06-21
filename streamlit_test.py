@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import openai
 from openai import OpenAI
+from PIL import Image
 
 # 使用环境变量设置 OpenAI API 金钥
 api_key = os.getenv("OPENAI_API_KEY")
@@ -38,3 +39,15 @@ if user_input:
 for message in st.session_state['chat_history']:
     role = "你" if message["role"] == "user" else "ChatGPT"
     st.write(f"{role}: {message['content']}")
+st.header("圖片")
+st.write("這是圖片頁面。")
+uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    # 打開並顯示圖片
+    image = Image.open(uploaded_file)
+    st.image(image, caption='上傳的圖片', use_column_width=True)
+    
+
+else:
+    st.write("請上載一個圖片文件。")
