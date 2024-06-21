@@ -23,7 +23,7 @@ user_input = st.text_input("你：", key="input")
 
 # 定义异步函数进行消息流处理
 async def get_response(messages):
-    client = openai.ChatCompletion
+    client = openai.OpenAI()
     stream = client.create(
         model="gpt-3.5-turbo",
         messages=messages,
