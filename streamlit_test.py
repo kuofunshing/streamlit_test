@@ -1,14 +1,14 @@
 import streamlit as st
 import os
-from openai import OpenAI
+import openai
 
-# 使用環境變量設置 OpenAI API 金鑰
+# 使用环境变量设置 OpenAI API 金钥
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
-# 初始化 OpenAI 客戶端
-client = OpenAI(api_key=api_key)
+# 初始化 OpenAI 客户端
+openai.api_key = api_key
 
 st.title("ChatGPT 对话功能")
 st.write("与 ChatGPT 进行对话。")
@@ -24,11 +24,12 @@ user_input = st.text_input("你：", key="input")
 if user_input:
     try:
         st.session_state['chat_history'].append({"role": "user", "content": user_input})
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=st.session_state['chat_history']
         )
-        st.session_state['chat_history'].append({"role": "assistant", "content": response.choices[0].message['content']})
+        assistant_message = response['choices'][0]['message']['content']
+        st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
