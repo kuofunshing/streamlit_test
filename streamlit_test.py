@@ -28,7 +28,7 @@ if user_input:
             messages=st.session_state['chat_history'],
             model="gpt-3.5-turbo",
         )
-        assistant_message = chat_completion.choices[0].message['content']
+        assistant_message = chat_completion.choices[0].message.content
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
