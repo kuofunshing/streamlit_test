@@ -23,15 +23,18 @@ user_input = st.text_input("你：", key="input")
 
 # 定义异步函数进行消息流处理
 async def get_response(messages):
-    client = openai.OpenAI()
-    stream = await client.chat.completions.create(
+    client = openai.ChatCompletion
+    stream = client.create(
         model="gpt-3.5-turbo",
         messages=messages,
         stream=True,
     )
     response = ""
-    async for chunk in stream:
-        response += chunk.choices[0].delta.content or ""
+    for chunk in stream:
+        delta = chunk.choices[0].delta
+        if delta.get('content'):
+            response += delta['content']
+            st.write(delta['content'], end="")
     return response
 
 # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
