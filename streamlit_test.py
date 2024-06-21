@@ -18,10 +18,10 @@ user_input = st.text_input("你：", key="input")
 if user_input:
     st.session_state['chat_history'].append({"role": "user", "content": user_input})
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # 使用最新的模型名称，如 "gpt-3.5-turbo"
+        model="gpt-3.5-turbo",
         messages=st.session_state['chat_history']
     )
-    st.session_state['chat_history'].append({"role": "assistant", "content": response['choices'][0]['message']['content']})
+    st.session_state['chat_history'].append({"role": "assistant", "content": response.choices[0].message['content']})
 
 # 显示聊天历史记录
 for message in st.session_state['chat_history']:
