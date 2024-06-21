@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import openai
 from openai import OpenAI
 
 # 使用环境变量设置 OpenAI API 金钥
