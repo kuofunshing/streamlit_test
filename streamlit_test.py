@@ -24,13 +24,13 @@ user_input = st.text_input("你：", key="input")
 # 定义异步函数进行消息流处理
 async def get_response(messages):
     client = openai.OpenAI()
-    stream = client.chat.completions.create(
-        model="gpt-4",
+    stream = await client.chat.completions.create(
+        model="gpt-3.5-turbo",
         messages=messages,
         stream=True,
     )
     response = ""
-    for chunk in stream:
+    async for chunk in stream:
         response += chunk.choices[0].delta.content or ""
     return response
 
