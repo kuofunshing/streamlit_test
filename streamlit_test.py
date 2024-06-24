@@ -55,8 +55,8 @@ with tab2:
 
     # 根据选择显示图片和文本
     if animal:
-        image_path = f'/label/{animal}.jpg'
-        text_path = f'/label/{animal}.txt'
+        image_path = f'streamlit_test/label/{animal}.jpg'
+        text_path = f'streamlit_test/label/{animal}.txt'
 
         if os.path.exists(image_path) and os.path.exists(text_path):
             image = Image.open(image_path)
