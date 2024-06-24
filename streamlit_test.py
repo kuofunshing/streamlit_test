@@ -28,7 +28,7 @@ if user_input:
     try:
         chat_completion = client.chat.completions.create(
             messages=st.session_state['chat_history'],
-            model="gpt-4o",
+            model="gpt-4o",  # 假设这是正确的模型名称
         )
         assistant_message = chat_completion.choices[0].message.content
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
@@ -39,6 +39,7 @@ if user_input:
 for message in st.session_state['chat_history']:
     role = "你" if message["role"] == "user" else "ChatGPT"
     st.write(f"{role}: {message['content']}")
+
 st.header("圖片")
 st.write("這是圖片頁面。")
 uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
@@ -47,7 +48,5 @@ if uploaded_file is not None:
     # 打開並顯示圖片
     image = Image.open(uploaded_file)
     st.image(image, caption='上傳的圖片', use_column_width=True)
-    
-
 else:
     st.write("請上載一個圖片文件。")
