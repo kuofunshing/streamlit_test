@@ -17,7 +17,7 @@ if not api_key or not google_api_key:
 client = OpenAI(api_key=api_key)
 
 # 初始化 Google Cloud Vision 客户端
-vision_client = vision.ImageAnnotatorClient.from_service_account_json('path_to_your_service_account.json')
+vision_client = vision.ImageAnnotatorClient.from_service_account_json('https://oauth2.googleapis.com/token')
 
 st.title("ChatGPT 对话功能")
 st.write("与 ChatGPT 进行对话。")
