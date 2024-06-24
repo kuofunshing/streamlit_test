@@ -35,7 +35,7 @@ with tab1:
             # Assuming the model understands the task to recommend YouTube videos based on tags
             prompt = f"根据以下標籤推薦三個 YouTube 影片，只顯示標題和連結，不需要詳細說明：{user_input}"
             response = client.chat.completions.create(
-                model="gpt-4o",  # Use an appropriate model for text generation
+                model="gpt-4",  # Use an appropriate model for text generation
                 messages=[{"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
                           {"role": "user", "content": prompt}]
             )
