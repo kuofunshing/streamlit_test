@@ -2,7 +2,6 @@ import streamlit as st
 import os
 import openai
 from openai import OpenAI
-from PIL import Image
 
 # 使用環境變數設置 OpenAI API 金鑰
 api_key = os.getenv("OPENAI_API_KEY")
@@ -19,7 +18,7 @@ tab1, tab2 = st.tabs(["ChatGPT 對話功能", "圖片處理"])
 # ChatGPT 對話功能
 with tab1:
     st.title("ChatGPT 對話功能")
-    st.write("貼上標籤以獲取推薦 YouTube 連結")
+    st.write("輸入標籤獲取推薦的 YouTube 影片連結。")
     
     # 初始化聊天歷史記錄
     if 'chat_history' not in st.session_state:
@@ -34,8 +33,7 @@ with tab1:
         try:
             chat_completion = client.chat.completions.create(
                 messages=st.session_state['chat_history'],
-                model="gpt-4o",
-                system_message="你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦 YouTube 影片,僅顯示標題和連結,不要用記錄呈現的文字回答"
+                model="gpt-4o"
             )
             assistant_message = chat_completion.choices[0].message.content
             st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
@@ -52,26 +50,10 @@ with tab2:
     st.header("圖片處理")
     st.write("這是圖片處理頁面。")
 
-    animal = st.selectbox("選擇一個動物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
-
-    # 根據選擇顯示圖片和文本
-    if animal:
-        image_path = f'label/{animal}.jpg'
-        text_path = f'label/{animal}.txt'
-
-        if os.path.exists(image_path) and os.path.exists(text_path):
-            image = Image.open(image_path)
-            st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
-
-            with open(text_path, 'r') as file:
-                text_content = file.read()
-            st.write(text_content)
-        else:
-            st.error("檔案不存在，請確保路徑和檔名正確。")
-
     uploaded_file = st.file_uploader("選擇一個圖片檔案", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
+        # 打開並顯示圖片
         image = Image.open(uploaded_file)
         st.image(image, caption='上傳的圖片', use_column_width=True)
     else:
