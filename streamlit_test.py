@@ -38,7 +38,7 @@ with tab1:
                 messages=[{"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
                           {"role": "user", "content": prompt}]
             )
-            assistant_message = response.choices[0].text  # Accessing the text directly
+            assistant_message = response.choices[0].message['content']  # Correctly accessing the content
             st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
         except Exception as e:
             st.error(f"发生错误：{str(e)}")
@@ -47,8 +47,6 @@ with tab1:
     for message in st.session_state['chat_history']:
         role = "你" if message["role"] == "user" else "ChatGPT"
         st.write(f"{role}: {message['content']}")
-
-
 # Image Processing
 with tab2:
     st.header("圖片處理")
