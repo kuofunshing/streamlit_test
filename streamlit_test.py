@@ -32,7 +32,8 @@ if user_input:
     try:
         chat_completion = client.chat.completions.create(
             messages=st.session_state['chat_history'],
-            model="gpt-4o"
+            model="gpt-4o",
+            max_tokens=200  # 设置最大token数为200
         )
         assistant_message = chat_completion.choices[0].message.content
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
