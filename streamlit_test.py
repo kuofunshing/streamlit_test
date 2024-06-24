@@ -1,24 +1,22 @@
+
 import streamlit as st
 import os
 from PIL import Image
 import json
 import openai
-from openai import OpenAI
 from google.cloud import vision
 from google.oauth2 import service_account
 import io
 
-# 使用环境变量设置 OpenAI API 金钥和 Google Cloud Vision API 金钥
-
-api_key = os.getenv("OPENAI_API_KEY")
-google_api_key = os.getenv("GOOGLE_CLOUD_VISION_API_KEY")
+# 使用环境变量设置 OpenAI API 密钥和 Google Cloud Vision API 密钥
+open_api_key = os.getenv("OPENAI_API_KEY")
 service_account_info = json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON'))
 
-if not api_key or not google_api_key or not service_account_info:
-    raise ValueError("Please set the OPENAI_API_KEY and GOOGLE_CLOUD_VISION_API_KEY environment variables.")
+if not open_api_key or not service_account_info:
+    raise ValueError("Please set the OPENAI_API_KEY and GOOGLE_APPLICATION_CREDENTIALS_JSON environment variables.")
 
 # 初始化 OpenAI 客户端
-client = OpenAI(api_key=api_key)
+client = openai.OpenAI(api_key=open_api_key)
 
 # Google Cloud Vision 客户端初始化
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
@@ -37,11 +35,12 @@ user_input = st.text_input("你：", key="input")
 if user_input:
     st.session_state['chat_history'].append({"role": "user", "content": user_input})
     try:
-        chat_completion = client.chat.completions.create(
-            messages=st.session_state['chat_history'],
-            model="gpt-4o",
+         chat_completion = client.chat.completions.create(
+            model="gpt-4",  # 使用正确的模型标识符
+            prompt=user_input,
+            max_tokens=150
         )
-        assistant_message = chat_completion.choices[0].message.content
+        assistant_message = chat_completion.choices[0].text.strip()
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
@@ -77,16 +76,17 @@ if uploaded_file is not None:
 
 def generate_gpt_description(result, use_gpt4=False):
     try:
-        model = "gpt-4o" if use_gpt4 else "gpt-3.5"
+        model = "gpt-4" if use_gpt4 else "gpt-3.5"
         messages = [
             {"role": "system", "content": "你是专业图片描述生成助手,以繁体中文回答,请确实地描述图片状况,不要用记录呈现的文字回答"},
             {"role": "user", "content": f"根据以下辨识结果生成一段描述：{result}"}
         ]
-        response = client.chat.completions.create(
+        response = client.Completion.create(
             model=model,
-            messages=messages,
+            prompt="\n".join([m["content"] for m in messages]),
             max_tokens=150
         )
-        return response.choices[0].message.content
+        return response.choices[0].text.strip()
     except Exception as e:
         return f"生成描述失败: {str(e)}"
+
