@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-import openai
 from openai import OpenAI
 from PIL import Image
 
@@ -35,11 +34,11 @@ with tab1:
             # Assuming the model understands the task to recommend YouTube videos based on tags
             prompt = f"根据以下標籤推薦三個 YouTube 影片，只顯示標題和連結，不需要詳細說明：{user_input}"
             response = client.chat.completions.create(
-                model="text-davinci-002",  # Use an appropriate model for text generation
-                prompt=prompt,
-                max_tokens=150
+                model="gpt-4o",  # Use an appropriate model for text generation
+                messages=[{"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
+                          {"role": "user", "content": prompt}]
             )
-            st.session_state['chat_history'].append({"role": "assistant", "content": response.choices[0].text})
+            st.session_state['chat_history'].append({"role": "assistant", "content": response.choices[0].message['content']})
         except Exception as e:
             st.error(f"发生错误：{str(e)}")
 
@@ -53,7 +52,6 @@ with tab2:
     st.header("圖片處理")
     st.write("这是图片处理页面。")
 
-    # User selects an animal for image display
     animal = st.selectbox("選擇一個動物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
 
     # Display image and text based on selection
