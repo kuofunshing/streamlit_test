@@ -59,18 +59,18 @@ with tab2:
         image_path = f'label/{animal}.jpg'
         text_path = f'label/{animal}.txt'
 
+        # Check if the image file exists
         if os.path.exists(image_path) and os.path.exists(text_path):
-            image = Image.open(image_path)
-            st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
+        image = Image.open(image_path)
+        st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
 
-            with open(text_path, 'r') as file:
-                text_content = file.read()
-            st.write(text_content)
-        else:
-            st.error("文件不存在，請確保路徑和文件名正確。")
-
-    # Additional image processing with file uploader
-    uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
+        with open(text_path, 'r') as file:
+        text_content = file.read()
+        st.write(text_content)
+    else:
+        st.error(f"文件不存在，請確保路徑和文件名正確。路徑：{image_path}")
+        # Additional image processing with file uploader
+        uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
