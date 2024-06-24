@@ -38,7 +38,7 @@ with tab1:
                     {"role": "user", "content": user_input}
                 ]
             )
-            assistant_message = chat_completion.choices[0].message['content']
+            assistant_message = chat_completion.choices[0].message['content']  # 正确访问返回的文本
             st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
         except Exception as e:
             st.error(f"發生錯誤：{str(e)}")
@@ -50,27 +50,27 @@ with tab1:
 
 with tab2:
     st.header("圖片處理")
-    st.write("這是圖片處理頁面。")
+    st.write("这是图片处理页面。")
 
     animal = st.selectbox("選擇一個動物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
 
-    # 根據選擇顯示圖片和文本
+    # Display image and text based on selection
     if animal:
         image_path = f'label/{animal}.jpg'
         text_path = f'label/{animal}.txt'
 
-        # Check if the image file exists
         if os.path.exists(image_path) and os.path.exists(text_path):
             image = Image.open(image_path)
             st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
 
-        with open(text_path, 'r') as file:
-        text_content = file.read()
-        st.write(text_content)
-    else:
-        st.error(f"文件不存在，請確保路徑和文件名正確。路徑：{image_path}")
-        # Additional image processing with file uploader
-        uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
+            with open(text_path, 'r') as file:
+                text_content = file.read()
+            st.write(text_content)
+        else:
+            st.error("文件不存在，請確保路徑和文件名正確。")
+
+    # File uploader for additional image processing
+    uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
