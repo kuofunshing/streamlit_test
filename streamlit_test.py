@@ -40,6 +40,34 @@ if user_input:
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
 
+st.header("圖片")
+st.write("這是圖片頁面。")
+options = ["Bus", "Car", "Cheetah", "Penguins", "Pig", "Scooter", "cat", "rabbit", "zebra"]
+animal = st.selectbox("選擇一個項目", options)
+
+# Display image and text based on selection
+if animal:
+    image_path = f'label/{animal}.jpg'
+    text_path = f'label/{animal}.txt'
+
+    if os.path.exists(image_path) and os.path.exists(text_path):
+        image = Image.open(image_path)
+        st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
+
+        with open(text_path, 'r') as file:
+            text_content = file.read()
+        st.write(text_content)
+    else:
+        st.error("文件不存在，請確保路徑和文件名正確。")
+
+uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption='上傳的圖片', use_column_width=True)
+else:
+    st.write("請上傳一個圖片文件。")
+
 # 显示聊天历史记录
 for message in st.session_state['chat_history']:
     role = "你" if message["role"] == "user" else "ChatGPT"
