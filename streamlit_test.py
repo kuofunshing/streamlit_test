@@ -24,17 +24,11 @@ user_input = st.text_input("你：", key="input")
 
 # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
 if user_input:
-    # 添加用户输入到聊天历史
     st.session_state['chat_history'].append({"role": "user", "content": user_input})
-
-    # 添加系统信息指导模型行为
-    system_message = "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"
-    st.session_state['chat_history'].append({"role": "system", "content": system_message})
-
     try:
         chat_completion = client.chat.completions.create(
             messages=st.session_state['chat_history'],
-            model="gpt-4o",  # 使用适当的模型
+            model="gpt-4o",  # 假设这是正确的模型名称
         )
         assistant_message = chat_completion.choices[0].message.content
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
@@ -48,11 +42,28 @@ for message in st.session_state['chat_history']:
 
 st.header("圖片")
 st.write("這是圖片頁面。")
+options = ["Bus", "Car", "Cheetah", "Penguins", "Pig", "Scooter", "cat", "rabbit", "zebra"]
+animal = st.selectbox("選擇一個項目", options)
+
+# Display image and text based on selection
+if animal:
+    image_path = f'label/{animal}.jpg'
+    text_path = f'label/{animal}.txt'
+
+    if os.path.exists(image_path) and os.path.exists(text_path):
+        image = Image.open(image_path)
+        st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
+
+        with open(text_path, 'r') as file:
+            text_content = file.read()
+        st.write(text_content)
+    else:
+        st.error("文件不存在，請確保路徑和文件名正確。")
+
 uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
-    # 打開並顯示圖片
     image = Image.open(uploaded_file)
     st.image(image, caption='上傳的圖片', use_column_width=True)
 else:
-    st.write("請上載一個圖片文件。")
+    st.write("請上傳一個圖片文件。")
