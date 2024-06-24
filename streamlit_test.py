@@ -24,11 +24,17 @@ user_input = st.text_input("你：", key="input")
 
 # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
 if user_input:
+    # 添加用户输入到聊天历史
     st.session_state['chat_history'].append({"role": "user", "content": user_input})
+
+    # 添加系统信息指导模型行为
+    system_message = "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"
+    st.session_state['chat_history'].append({"role": "system", "content": system_message})
+
     try:
         chat_completion = client.chat.completions.create(
             messages=st.session_state['chat_history'],
-            model="gpt-4o",  # 假设这是正确的模型名称
+            model="gpt-4o",  # 使用适当的模型
         )
         assistant_message = chat_completion.choices[0].message.content
         st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
