@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import openai
 from openai import OpenAI
+from PIL import Image
 
 # 使用环境变量设置 OpenAI API 金钥
 api_key = os.getenv("OPENAI_API_KEY")
