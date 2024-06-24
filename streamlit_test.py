@@ -31,17 +31,17 @@ with tab1:
     if user_input:
         st.session_state['chat_history'].append({"role": "user", "content": user_input})
         try:
-    chat_completion = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
-            {"role": "user", "content": user_input}
-        ]
-    )
-    assistant_message = chat_completion.choices[0].text  # 正确访问返回的文本
-    st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
-except Exception as e:
-    st.error(f"發生錯誤：{str(e)}")
+            chat_completion = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
+                    {"role": "user", "content": user_input}
+                ]
+            )
+            assistant_message = chat_completion.choices[0].message['content']
+            st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
+        except Exception as e:
+            st.error(f"發生錯誤：{str(e)}")
 
     # 顯示聊天歷史記錄
     for message in st.session_state['chat_history']:
@@ -50,11 +50,11 @@ except Exception as e:
 
 with tab2:
     st.header("圖片處理")
-    st.write("这是图片处理页面。")
+    st.write("這是圖片處理頁面。")
 
     animal = st.selectbox("選擇一個動物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
 
-    # Display image and text based on selection
+    # 根據選擇顯示圖片和文本
     if animal:
         image_path = f'label/{animal}.jpg'
         text_path = f'label/{animal}.txt'
@@ -69,7 +69,7 @@ with tab2:
         else:
             st.error("文件不存在，請確保路徑和文件名正確。")
 
-    # File uploader for additional image processing
+    # Additional image processing with file uploader
     uploaded_file = st.file_uploader("選擇一個圖片文件", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
