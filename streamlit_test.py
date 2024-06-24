@@ -4,74 +4,75 @@ import openai
 from openai import OpenAI
 from PIL import Image
 
-# 使用环境变量设置 OpenAI API 金钥
+# 使用環境變數設置 OpenAI API 金鑰
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
-    raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+    raise ValueError("請設定 OPENAI_API_KEY 環境變數。")
 
-# 初始化 OpenAI 客户端
+# 初始化 OpenAI 客戶端
 client = OpenAI(api_key=api_key)
 
-# 设置页面布局
+# 設定頁面佈局
 st.set_page_config(layout="wide")
-tab1, tab2 = st.tabs(["ChatGPT 对话功能", "图片处理"])
+tab1, tab2 = st.tabs(["ChatGPT 對話功能", "圖片處理"])
 
-# ChatGPT 对话功能
+# ChatGPT 對話功能
 with tab1:
-    st.title("ChatGPT 对话功能")
-    st.write("与 ChatGPT 进行对话。")
+    st.title("ChatGPT 對話功能")
+    st.write("貼上標籤以獲取推薦 YouTube 連結")
     
-    # 初始化聊天历史记录
+    # 初始化聊天歷史記錄
     if 'chat_history' not in st.session_state:
         st.session_state['chat_history'] = []
 
-    # 获取用户输入
+    # 獲取用戶輸入
     user_input = st.text_input("你：", key="input")
 
-    # 当用户输入新消息时，将其添加到聊天历史记录中并获取模型的响应
+    # 當用戶輸入新消息時，將其添加到聊天歷史記錄中並獲取模型的響應
     if user_input:
         st.session_state['chat_history'].append({"role": "user", "content": user_input})
         try:
             chat_completion = client.chat.completions.create(
                 messages=st.session_state['chat_history'],
-                model="gpt-4o",  # 假设这是正确的模型名称
+                model="gpt-4o",
+                system_message="你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦 YouTube 影片,僅顯示標題和連結,不要用記錄呈現的文字回答"
             )
             assistant_message = chat_completion.choices[0].message.content
             st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
         except Exception as e:
-            st.error(f"An error occurred: {str(e)}")
+            st.error(f"發生錯誤：{str(e)}")
 
-    # 显示聊天历史记录
+    # 顯示聊天歷史記錄
     for message in st.session_state['chat_history']:
         role = "你" if message["role"] == "user" else "ChatGPT"
         st.write(f"{role}: {message['content']}")
 
-# 图片处理
+# 圖片處理
 with tab2:
-    st.header("图片处理")
-    st.write("这是图片处理页面。")
+    st.header("圖片處理")
+    st.write("這是圖片處理頁面。")
 
-    animal = st.selectbox("选择一个动物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
+    animal = st.selectbox("選擇一個動物", ['cat', 'Pig', 'Bus', 'Cheetah', 'Penguins', 'Car', 'rabbit', 'zebra', 'Scooter'])
 
-    # 根据选择显示图片和文本
+    # 根據選擇顯示圖片和文本
     if animal:
         image_path = f'label/{animal}.jpg'
         text_path = f'label/{animal}.txt'
 
         if os.path.exists(image_path) and os.path.exists(text_path):
             image = Image.open(image_path)
-            st.image(image, caption=f'显示的是: {animal}', use_column_width=True)
+            st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
 
             with open(text_path, 'r') as file:
                 text_content = file.read()
             st.write(text_content)
         else:
-            st.error("文件不存在，请确保路径和文件名正确。")
+            st.error("檔案不存在，請確保路徑和檔名正確。")
 
-    uploaded_file = st.file_uploader("选择一个图片文件", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("選擇一個圖片檔案", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption='上传的图片', use_column_width=True)
+        st.image(image, caption='上傳的圖片', use_column_width=True)
     else:
-        st.write("请上传一个图片文件。")
+        st.write("請上傳一個圖片檔案。")
