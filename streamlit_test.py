@@ -8,6 +8,7 @@ from PIL import Image
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+API_KEY = os.getenv("GOOGLE_CLOUD_VISION_API_KEY")
 
 # 初始化 OpenAI 客户端
 client = OpenAI(api_key=api_key)
