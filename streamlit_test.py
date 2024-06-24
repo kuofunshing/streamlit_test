@@ -1,53 +1,53 @@
 import streamlit as st
 import os
+import openai
 from openai import OpenAI
-from PIL import Image
 
-# Set up OpenAI API key from environment variable
+# 使用環境變數設置 OpenAI API 金鑰
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
-    raise ValueError("Please set the OPENAI_API_KEY environment variable.")
+    raise ValueError("請設定 OPENAI_API_KEY 環境變數。")
 
-# Initialize the OpenAI client
+# 初始化 OpenAI 客戶端
 client = OpenAI(api_key=api_key)
 
-# Configure page layout
+# 設定頁面佈局
 st.set_page_config(layout="wide")
 tab1, tab2 = st.tabs(["ChatGPT 對話功能", "圖片處理"])
 
-# ChatGPT Dialogue Functionality
+# ChatGPT 對話功能
 with tab1:
     st.title("ChatGPT 對話功能")
-    st.write("根据标签推荐 YouTube 影片。")
-
-    # Initialize chat history
+    st.write("輸入標籤獲取推薦的 YouTube 影片連結。")
+    
+    # 初始化聊天歷史記錄
     if 'chat_history' not in st.session_state:
         st.session_state['chat_history'] = []
 
-    # Get user input for tags
-    user_input = st.text_input("輸入標籤：", key="input")
+    # 獲取用戶輸入
+    user_input = st.text_input("你：", key="input")
 
-    # When user inputs tags, generate YouTube video recommendations
+    # 當用戶輸入新消息時，將其添加到聊天歷史記錄中並獲取模型的響應
     if user_input:
         st.session_state['chat_history'].append({"role": "user", "content": user_input})
         try:
-            # Assuming the model understands the task to recommend YouTube videos based on tags
-            prompt = f"根据以下標籤推薦三個 YouTube 影片，只顯示標題和連結，不需要詳細說明：{user_input}"
-            response = client.chat.completions.create(
-                model="gpt-4o",  # Use an appropriate model for text generation
-                messages=[{"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
-                          {"role": "user", "content": prompt}]
-            )
-            assistant_message = response.choices[0].message['content']  # Correctly accessing the content
-            st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
-        except Exception as e:
-            st.error(f"发生错误：{str(e)}")
+    chat_completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
+            {"role": "user", "content": user_input}
+        ]
+    )
+    assistant_message = chat_completion.choices[0].text  # 正确访问返回的文本
+    st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
+except Exception as e:
+    st.error(f"發生錯誤：{str(e)}")
 
-    # Display chat history and results
+    # 顯示聊天歷史記錄
     for message in st.session_state['chat_history']:
         role = "你" if message["role"] == "user" else "ChatGPT"
         st.write(f"{role}: {message['content']}")
-# Image Processing
+
 with tab2:
     st.header("圖片處理")
     st.write("这是图片处理页面。")
