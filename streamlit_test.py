@@ -61,8 +61,8 @@ with tab2:
 
         # Check if the image file exists
         if os.path.exists(image_path) and os.path.exists(text_path):
-        image = Image.open(image_path)
-        st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
+            image = Image.open(image_path)
+            st.image(image, caption=f'顯示的是: {animal}', use_column_width=True)
 
         with open(text_path, 'r') as file:
         text_content = file.read()
