@@ -16,6 +16,7 @@ st.set_page_config(layout="wide")
 tab1, tab2 = st.tabs(["ChatGPT 對話功能", "圖片處理"])
 
 # ChatGPT Dialogue Functionality
+# ChatGPT Dialogue Functionality
 with tab1:
     st.title("ChatGPT 對話功能")
     st.write("根据标签推荐 YouTube 影片。")
@@ -38,7 +39,8 @@ with tab1:
                 messages=[{"role": "system", "content": "你是影片搜尋助手,以繁體中文回答,請根據提供的標籤推薦youtube影片,僅顯示標題和連結,不要用記錄呈現的文字回答"},
                           {"role": "user", "content": prompt}]
             )
-            st.session_state['chat_history'].append({"role": "assistant", "content": response.choices[0].message['content']})
+            assistant_message = response['choices'][0]['message']['content'] if 'message' in response['choices'][0] else response['choices'][0]['text']
+            st.session_state['chat_history'].append({"role": "assistant", "content": assistant_message})
         except Exception as e:
             st.error(f"发生错误：{str(e)}")
 
