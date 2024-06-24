@@ -9,7 +9,7 @@ from google.oauth2 import service_account
 import io
 
 # 使用环境变量设置 OpenAI API 金钥和 Google Cloud Vision API 金钥
-export GOOGLE_CLOUD_VISION_API_KEY=""C:\streamlit\integrated-ray-427402-g8-da77ce1fafa5.json""
+
 api_key = os.getenv("OPENAI_API_KEY")
 google_api_key = os.getenv("GOOGLE_CLOUD_VISION_API_KEY")
 service_account_info = json.loads(os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON'))
