@@ -34,7 +34,7 @@ with tab1:
         try:
             # Assuming the model understands the task to recommend YouTube videos based on tags
             prompt = f"根据以下標籤推薦三個 YouTube 影片，只顯示標題和連結，不需要詳細說明：{user_input}"
-            response = client.Completion.create(
+            response = client.chat.completions.create(
                 model="text-davinci-002",  # Use an appropriate model for text generation
                 prompt=prompt,
                 max_tokens=150
